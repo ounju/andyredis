@@ -1,0 +1,25 @@
+# Administrator credentials when not using an existing secret (see below)
+adminUser: admin
+adminPassword: grafanapassword
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+    # targetPort: 4181 To be used with a proxy extraContainer
+  annotations: {}
+  labels: {}
+  portName: service
+
+## Configure grafana datasources
+## ref: http://docs.grafana.org/administration/provisioning/#datasources
+##
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://andyprometheus-server.default.svc.cluster.local
+      access: proxy
+      isDefault: true

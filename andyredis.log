@@ -1,0 +1,67 @@
+NAME:   andyredis
+LAST DEPLOYED: Tue Dec 10 17:54:25 2019
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME              AGE
+andyredis         1s
+andyredis-health  1s
+
+==> v1/Pod(related)
+NAME                AGE
+andyredis-master-0  0s
+andyredis-slave-0   0s
+
+==> v1/Secret
+NAME       AGE
+andyredis  1s
+
+==> v1/Service
+NAME                AGE
+andyredis-headless  1s
+andyredis-master    1s
+andyredis-metrics   0s
+andyredis-slave     1s
+
+==> v1/StatefulSet
+NAME              AGE
+andyredis-master  0s
+andyredis-slave   0s
+
+
+NOTES:
+** Please be patient while the chart is being deployed **
+Redis can be accessed via port 6379 on the following DNS names from within your cluster:
+
+andyredis-master.default.svc.cluster.local for read/write operations
+andyredis-slave.default.svc.cluster.local for read-only operations
+
+
+To get your password run:
+
+    export REDIS_PASSWORD=$(kubectl get secret --namespace default andyredis -o jsonpath="{.data.redis-password}" | base64 --decode)
+
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   kubectl run --namespace default andyredis-client --rm --tty -i --restart='Never' \
+    --env REDIS_PASSWORD=$REDIS_PASSWORD \
+   --image docker.io/bitnami/redis:5.0.7-debian-9-r12 -- bash
+
+2. Connect using the Redis CLI:
+   redis-cli -h andyredis-master -a $REDIS_PASSWORD
+   redis-cli -h andyredis-slave -a $REDIS_PASSWORD
+
+To connect to your database from outside the cluster execute the following commands:
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace default -w andyredis'
+
+    export SERVICE_IP=$(kubectl get svc --namespace default andyredis --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+    redis-cli -h $SERVICE_IP -p  -a $REDIS_PASSWORD
+
+
+

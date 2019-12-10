@@ -1,0 +1,9 @@
+scrape_configs:
+  - job_name: andyredis
+    static_configs:
+      - targets:
+        - andyredis-server.default.svc.cluster.local:9121
+#  - job_name: andyredisexporter
+#    static_configs:
+#      - targets:
+#        - andyredisexporter-server.default.svc.cluster.local:9121
