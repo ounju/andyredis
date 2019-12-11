@@ -1,4 +1,6 @@
+echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 helm list
+echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 echo 'delete andygrafana start'
 helm delete andygrafana --purge
 echo 'delete andygrafana OK'
@@ -8,11 +10,12 @@ echo 'delete andyprometheus OK'
 #echo 'delete andyredisexporter OK'
 helm delete andyredis --purge
 echo 'delete andyredis OK'
+echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 while [ true ]
 do
-  echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   echo 'kubectl get all'
   kubectl get all
+  echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   linecount=$(kubectl get all | grep pod | wc -l)
   echo 'linecount : ' $linecount
   if [ $linecount -eq 0 ]
@@ -21,14 +24,3 @@ do
   fi
   sleep 5
 done
-#echo 'ps -ef | grep kubectl'
-#ps -ef | grep kubectl
-#pscount=$(ps -ef | grep kubectl | wc -l)
-#echo 'pscount : ' $pscount
-#if [ $pscount -gt 0 ]
-#then
-#  ps -ef | grep kubectl | kill -9 $(awk '{print $2}')
-#fi
-#sleep 2
-#echo 'ps -ef | grep kubectl'
-#ps -ef | grep kubectl

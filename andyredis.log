@@ -1,13 +1,13 @@
 NAME:   andyredis
-LAST DEPLOYED: Tue Dec 10 17:54:25 2019
+LAST DEPLOYED: Wed Dec 11 18:29:26 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
 ==> v1/ConfigMap
 NAME              AGE
-andyredis         1s
-andyredis-health  1s
+andyredis         0s
+andyredis-health  0s
 
 ==> v1/Pod(related)
 NAME                AGE
@@ -16,14 +16,13 @@ andyredis-slave-0   0s
 
 ==> v1/Secret
 NAME       AGE
-andyredis  1s
+andyredis  0s
 
 ==> v1/Service
 NAME                AGE
-andyredis-headless  1s
-andyredis-master    1s
+andyredis           0s
+andyredis-headless  0s
 andyredis-metrics   0s
-andyredis-slave     1s
 
 ==> v1/StatefulSet
 NAME              AGE
@@ -33,10 +32,11 @@ andyredis-slave   0s
 
 NOTES:
 ** Please be patient while the chart is being deployed **
-Redis can be accessed via port 6379 on the following DNS names from within your cluster:
+Redis can be accessed via port 6379 on the following DNS name from within your cluster:
 
-andyredis-master.default.svc.cluster.local for read/write operations
-andyredis-slave.default.svc.cluster.local for read-only operations
+andyredis.default.svc.cluster.local for read only operations
+
+For read/write operations, first access the Redis Sentinel cluster, which is available in port 26379 using the same domain name above.
 
 
 To get your password run:
@@ -52,16 +52,13 @@ To connect to your Redis server:
    --image docker.io/bitnami/redis:5.0.7-debian-9-r12 -- bash
 
 2. Connect using the Redis CLI:
-   redis-cli -h andyredis-master -a $REDIS_PASSWORD
-   redis-cli -h andyredis-slave -a $REDIS_PASSWORD
+   redis-cli -h andyredis -p 6379 -a $REDIS_PASSWORD # Read only operations
+   redis-cli -h andyredis -p 26379 -a $REDIS_PASSWORD # Sentinel access
 
 To connect to your database from outside the cluster execute the following commands:
 
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace default -w andyredis'
-
-    export SERVICE_IP=$(kubectl get svc --namespace default andyredis --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
-    redis-cli -h $SERVICE_IP -p  -a $REDIS_PASSWORD
+    kubectl port-forward --namespace default svc/andyredis-master 6379:6379 &
+    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD
 
 
 

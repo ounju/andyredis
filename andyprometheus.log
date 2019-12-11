@@ -1,5 +1,5 @@
 NAME:   andyprometheus
-LAST DEPLOYED: Tue Dec 10 17:54:27 2019
+LAST DEPLOYED: Wed Dec 11 18:29:28 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
@@ -27,11 +27,11 @@ andyprometheus-server        1s
 
 ==> v1/Pod(related)
 NAME                                                AGE
-andyprometheus-alertmanager-794f6b794d-mg4c9        1s
-andyprometheus-kube-state-metrics-698cdc8c95-nt4pz  1s
-andyprometheus-node-exporter-p6j2j                  1s
-andyprometheus-pushgateway-66664658ff-ltnvl         1s
-andyprometheus-server-5b5878cbdd-gj4qd              1s
+andyprometheus-alertmanager-794f6b794d-mzmc5        1s
+andyprometheus-kube-state-metrics-698cdc8c95-ffs6w  1s
+andyprometheus-node-exporter-r9vb6                  1s
+andyprometheus-pushgateway-66664658ff-vdrcx         1s
+andyprometheus-server-5b5878cbdd-lf58n              1s
 
 ==> v1/Service
 NAME                               AGE
