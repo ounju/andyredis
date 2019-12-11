@@ -1,0 +1,69 @@
+NAME:   andyredisha
+LAST DEPLOYED: Wed Dec 11 14:41:10 2019
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                            AGE
+andyredisha-redis-ha-configmap  0s
+
+==> v1/Deployment
+NAME                          AGE
+andyredisha-redis-ha-haproxy  0s
+
+==> v1/Pod(related)
+NAME                                           AGE
+andyredisha-redis-ha-haproxy-6cbbc95c4f-d8pdf  0s
+andyredisha-redis-ha-haproxy-6cbbc95c4f-t99cm  0s
+andyredisha-redis-ha-haproxy-6cbbc95c4f-z8smm  0s
+andyredisha-redis-ha-server-0                  0s
+
+==> v1/Role
+NAME                  AGE
+andyredisha-redis-ha  0s
+
+==> v1/RoleBinding
+NAME                  AGE
+andyredisha-redis-ha  0s
+
+==> v1/Secret
+NAME                  AGE
+andyredisha-redis-ha  0s
+
+==> v1/Service
+NAME                             AGE
+andyredisha-redis-ha             0s
+andyredisha-redis-ha-announce-0  0s
+andyredisha-redis-ha-announce-1  0s
+andyredisha-redis-ha-announce-2  0s
+andyredisha-redis-ha-announce-3  0s
+andyredisha-redis-ha-announce-4  0s
+andyredisha-redis-ha-haproxy     0s
+
+==> v1/ServiceAccount
+NAME                          AGE
+andyredisha-redis-ha          0s
+andyredisha-redis-ha-haproxy  0s
+
+==> v1/StatefulSet
+NAME                         AGE
+andyredisha-redis-ha-server  0s
+
+
+NOTES:
+Redis can be accessed via port 6379 and Sentinel can be accessed via port 26379 on the following DNS name from within your cluster:
+andyredisha-redis-ha.default.svc.cluster.local
+
+To connect to your Redis server:
+1. To retrieve the redis password:
+   echo $(kubectl get secret andyredisha-redis-ha -o "jsonpath={.data['auth']}" | base64 --decode)
+
+2. Connect to the Redis master pod that you can use as a client. By default the andyredisha-redis-ha-server-0 pod is configured as the master:
+
+   kubectl exec -it andyredisha-redis-ha-server-0 sh -n default
+
+3. Connect using the Redis CLI (inside container):
+
+   redis-cli -a <REDIS-PASS-FROM-SECRET>
+
