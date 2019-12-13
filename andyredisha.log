@@ -1,50 +1,48 @@
 NAME:   andyredisha
-LAST DEPLOYED: Wed Dec 11 14:41:10 2019
+LAST DEPLOYED: Thu Dec 12 11:11:58 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
 ==> v1/ConfigMap
 NAME                            AGE
-andyredisha-redis-ha-configmap  0s
+andyredisha-redis-ha-configmap  1s
 
 ==> v1/Deployment
 NAME                          AGE
 andyredisha-redis-ha-haproxy  0s
 
 ==> v1/Pod(related)
-NAME                                           AGE
-andyredisha-redis-ha-haproxy-6cbbc95c4f-d8pdf  0s
-andyredisha-redis-ha-haproxy-6cbbc95c4f-t99cm  0s
-andyredisha-redis-ha-haproxy-6cbbc95c4f-z8smm  0s
-andyredisha-redis-ha-server-0                  0s
+NAME                                          AGE
+andyredisha-redis-ha-haproxy-975c6dc5f-2nbqw  0s
+andyredisha-redis-ha-haproxy-975c6dc5f-7jdpb  0s
+andyredisha-redis-ha-haproxy-975c6dc5f-q44gx  0s
+andyredisha-redis-ha-server-0                 0s
 
 ==> v1/Role
 NAME                  AGE
-andyredisha-redis-ha  0s
+andyredisha-redis-ha  1s
 
 ==> v1/RoleBinding
 NAME                  AGE
-andyredisha-redis-ha  0s
+andyredisha-redis-ha  1s
 
 ==> v1/Secret
 NAME                  AGE
-andyredisha-redis-ha  0s
+andyredisha-redis-ha  1s
 
 ==> v1/Service
 NAME                             AGE
-andyredisha-redis-ha             0s
-andyredisha-redis-ha-announce-0  0s
-andyredisha-redis-ha-announce-1  0s
-andyredisha-redis-ha-announce-2  0s
-andyredisha-redis-ha-announce-3  0s
-andyredisha-redis-ha-announce-4  0s
-andyredisha-redis-ha-haproxy     0s
+andyredisha-redis-ha             1s
+andyredisha-redis-ha-announce-0  1s
+andyredisha-redis-ha-announce-1  1s
+andyredisha-redis-ha-announce-2  1s
+andyredisha-redis-ha-haproxy     1s
 
 ==> v1/ServiceAccount
 NAME                          AGE
-andyredisha-redis-ha          0s
-andyredisha-redis-ha-haproxy  0s
+andyredisha-redis-ha          1s
+andyredisha-redis-ha-haproxy  1s
 
 ==> v1/StatefulSet
 NAME                         AGE

@@ -1,5 +1,5 @@
 NAME:   andygrafana
-LAST DEPLOYED: Wed Dec 11 18:29:30 2019
+LAST DEPLOYED: Thu Dec 12 15:31:22 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
@@ -23,7 +23,7 @@ andygrafana  0s
 
 ==> v1/Pod(related)
 NAME                          AGE
-andygrafana-5cdb669558-mwk7w  0s
+andygrafana-5cdb669558-dvs8r  0s
 
 ==> v1/Role
 NAME              AGE
@@ -35,7 +35,7 @@ andygrafana-test  0s
 
 ==> v1/Secret
 NAME         AGE
-andygrafana  1s
+andygrafana  0s
 
 ==> v1/Service
 NAME         AGE
@@ -48,8 +48,8 @@ andygrafana-test  0s
 
 ==> v1beta1/PodSecurityPolicy
 NAME              AGE
-andygrafana       1s
-andygrafana-test  1s
+andygrafana       0s
+andygrafana-test  0s
 
 ==> v1beta1/Role
 NAME         AGE

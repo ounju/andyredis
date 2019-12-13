@@ -17,16 +17,16 @@ sentinel:
   #     cpu: 100m
   ## Redis Sentinel Service properties
   service:
-    ##  Redis Sentinel Service type
-    type: ClusterIP
+    ##  Redis Sentinel Service type   ClusterIP
+    type: LoadBalancer
     sentinelPort: 26379
     redisPort: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
-    # sentinelNodePort:
-    # redisNodePort:
+#    sentinelNodePort: 30000
+#    redisNodePort: 30001
 
     ## Provide any additional annotations which may be required. This can be used to
     ## set the LoadBalancer service type to internal only.
