@@ -2,7 +2,7 @@
 ## Cluster settings
 cluster:
   enabled: true
-  slaveCount: 2
+  slaveCount: 3
 
 ## Use redis sentinel in the redis pod. This will disable the master and slave services and
 ## create one redis service with ports to the sentinel and the redis instances
@@ -42,7 +42,7 @@ usePassword: true
 ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
 ##
-password: "redispasswoed"
+password: "redispassword"
 
 ##
 ## Redis Master parameters

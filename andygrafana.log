@@ -1,5 +1,5 @@
 NAME:   andygrafana
-LAST DEPLOYED: Thu Dec 12 15:31:22 2019
+LAST DEPLOYED: Fri Dec 13 15:10:52 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
@@ -22,8 +22,8 @@ NAME         AGE
 andygrafana  0s
 
 ==> v1/Pod(related)
-NAME                          AGE
-andygrafana-5cdb669558-dvs8r  0s
+NAME                         AGE
+andygrafana-886c67bbf-2txsz  0s
 
 ==> v1/Role
 NAME              AGE

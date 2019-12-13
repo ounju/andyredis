@@ -9,6 +9,9 @@ install.sh
 installsentinel.sh
 
 ## 참고) Sentinel 명령
+```shell script
+redis-cli -h 127.0.0.1 -p 26379 -a redispassword ROLE
+```
 ```text
 센티널 명령은 사용자가 사용할 수도 있지만, 많은 명령이 센티널 내부적으로 사용된다.
 Sentinel Data Structure : 센티널 Data Structure 설명

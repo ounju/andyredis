@@ -18,7 +18,7 @@ do
   linecount=$(kubectl get po | grep Running | wc -l)
   echo 'linecount : ' $linecount
   echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-  if [ $linecount -eq 9 ]
+  if [ $linecount -eq 10 ]
   then
     break
   fi
