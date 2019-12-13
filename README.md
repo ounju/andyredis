@@ -9,6 +9,7 @@ install.sh
 installsentinel.sh
 
 ## 참고) Sentinel 명령
+```text
 센티널 명령은 사용자가 사용할 수도 있지만, 많은 명령이 센티널 내부적으로 사용된다.
 Sentinel Data Structure : 센티널 Data Structure 설명
 INFO SENTINEL : 센티널에 대한 전반적인 정보를 조회한다.
@@ -31,3 +32,4 @@ SENTINEL INFO-CACHE : INFO 명령으로 가져온 정보를 저장한다.
 SENTINEL PENDING-SCRIPTS : 현재 대기 또는 실행중인 스크립트 정보를 조회한다.
 SENTINEL NOTIFICATION : 알림기능에 대한 설명.
 SENTINEL ELECTION : 센티널 리더를 선출하는 방법과 장애조치 설명
+```
