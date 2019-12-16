@@ -1,0 +1,4 @@
+FROM  ubuntu
+WORKDIR /app
+RUN apt update -y; apt upgrade -y; apt install vim -y; apt install telnet -y; apt install redis-server -y; apt install redis-tools -y
+ENTRYPOINT /usr/bin/redis-server
