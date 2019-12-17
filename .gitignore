@@ -1,3 +1,6 @@
 /.idea/
 /redisclientnodejs/node_modules/
 /redisclientnodejs/package-lock.json
+
+
+/chart-src/redis/.idea/

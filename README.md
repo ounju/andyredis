@@ -36,3 +36,78 @@ SENTINEL PENDING-SCRIPTS : 현재 대기 또는 실행중인 스크립트 정보
 SENTINEL NOTIFICATION : 알림기능에 대한 설명.
 SENTINEL ELECTION : 센티널 리더를 선출하는 방법과 장애조치 설명
 ```
+
+
+```shell script
+cd /Users/ounju-kim/valve-eks/example/eks-fast-track
+terraform init
+terraform plan
+terraform apply
+```
+
+```text
+Apply complete! Resources: 57 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+account_id = 759871273906
+caller_arn = arn:aws:iam::759871273906:user/ounju.kim
+caller_user = AIDA3B263POZESW27THNY
+config = #
+
+# kube config
+aws eks update-kubeconfig --name seoul-dev-fasttrack-eks --alias seoul-dev-fasttrack-eks
+
+# or
+mkdir -p ~/.kube && cp .output/kube_config.yaml ~/.kube/config
+
+# files
+cat .output/aws_auth.yaml
+cat .output/kube_config.yaml
+
+# get
+kubectl get node -o wide
+kubectl get all --all-namespaces
+
+#
+
+efs_id =
+terraform import module.efs.aws_efs_file_system.efs fs-32084f53
+
+efs_mount_target_ids =
+terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-ef11b78e
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-f111b790
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-ee11b78f
+
+import_command-1 =
+terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__a1c4daf8f58186f137a4367538c30c86.fasttrack.opsnow.io._CNAME
+
+nat_ip = [
+  "15.164.254.136",
+]
+private_subnet_cidr = [
+  "10.101.28.0/24",
+  "10.101.29.0/24",
+  "10.101.30.0/24",
+]
+private_subnet_ids = [
+  "subnet-0b91046a077823c93",
+  "subnet-07c749a11d607605c",
+  "subnet-0f81c0234ac797498",
+]
+public_subnet_cidr = [
+  "10.101.25.0/24",
+  "10.101.26.0/24",
+  "10.101.27.0/24",
+]
+public_subnet_ids = [
+  "subnet-0bdbbdd7d415af80f",
+  "subnet-049490a3e77aeba65",
+  "subnet-0b0b8bb8bc898e895",
+]
+record_set = *.fasttrack.opsnow.io
+sg-node = node security group id : sg-0a684efe744948995
+target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-DEV-FASTTRACK-EKS-ALB/00fa6382ff809c5e
+vpc_cidr = 10.101.0.0/16
+vpc_id = vpc-08a1ddab3ce3d9e04
+```

@@ -1,3 +1,3 @@
 echo 'reinstall start'
 ./delete.sh
-./install.sh
+./install-master-slave.sh

@@ -1,3 +1,3 @@
 echo 'reinstall start'
 ./delete.sh
-./installsentinel.sh
+./install-sentinel.sh
