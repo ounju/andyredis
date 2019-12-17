@@ -1,7 +1,7 @@
 var Redis = require("ioredis");
 var client = new Redis({
       sentinels: [
-        { host: "10.1.3.", port: 26379 }  //서비스 andyredis 의 아이피를 설정
+        { host: "a9c51f164208f11ea906b06b9971f375-1360734662.ap-northeast-2.elb.amazonaws.com", port: 26379 }  //서비스 andyredis 의 아이피를 설정
       ],
       sentinelPassword: "redispassword",
       name: "mymaster",
