@@ -1,0 +1,18 @@
+Name:          redis-data-andyredis-slave-0
+Namespace:     default
+StorageClass:  gp2
+Status:        Bound
+Volume:        pvc-a07e2154-2158-11ea-be9d-02344e80bf5e
+Labels:        app=redis
+               release=andyredis
+               role=slave
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/aws-ebs
+               volume.kubernetes.io/selected-node: ip-10-101-28-107.ap-northeast-2.compute.internal
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      8Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Mounted By:    andyredis-slave-0
+Events:        <none>

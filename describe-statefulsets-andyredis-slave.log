@@ -1,0 +1,140 @@
+Name:               andyredis-slave
+Namespace:          default
+CreationTimestamp:  Wed, 18 Dec 2019 14:38:32 +0900
+Selector:           app=redis,release=andyredis,role=slave
+Labels:             app=redis
+                    chart=redis-10.2.1
+                    heritage=Tiller
+                    release=andyredis
+Annotations:        <none>
+Replicas:           3 desired | 3 total
+Update Strategy:    RollingUpdate
+Pods Status:        3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:           app=redis
+                    chart=redis-10.2.1
+                    release=andyredis
+                    role=slave
+  Annotations:      checksum/configmap: 702c830278588210f5aaae31e48cdc688c50255a5dfc01aa4256a275881bdfb3
+                    checksum/health: 42031b9e27e760ddd36601f4f04a60e397bf233bed642eb05a32a6d3fa2545c9
+                    checksum/secret: 4a6fe110dd9c2f2e864fbe1b41e4711203cf28b252c80dd9d070ef7328149d11
+                    prometheus.io/port: 9121
+                    prometheus.io/scrape: true
+  Service Account:  default
+  Containers:
+   andyredis:
+    Image:      docker.io/bitnami/redis:5.0.7-debian-9-r12
+    Port:       6379/TCP
+    Host Port:  0/TCP
+    Command:
+      /bin/bash
+      -c
+      if [[ -n $REDIS_PASSWORD_FILE ]]; then
+        password_aux=`cat ${REDIS_PASSWORD_FILE}`
+        export REDIS_PASSWORD=$password_aux
+      fi
+      if [[ -n $REDIS_MASTER_PASSWORD_FILE ]]; then
+        password_aux=`cat ${REDIS_MASTER_PASSWORD_FILE}`
+        export REDIS_MASTER_PASSWORD=$password_aux
+      fi
+      if [[ ! -f /opt/bitnami/redis/etc/replica.conf ]];then
+        cp /opt/bitnami/redis/mounted-etc/replica.conf /opt/bitnami/redis/etc/replica.conf
+      fi
+      if [[ ! -f /opt/bitnami/redis/etc/redis.conf ]];then
+        cp /opt/bitnami/redis/mounted-etc/redis.conf /opt/bitnami/redis/etc/redis.conf
+      fi
+      ARGS=("--port" "${REDIS_PORT}")
+      ARGS+=("--slaveof" "${REDIS_MASTER_HOST}" "${REDIS_MASTER_PORT_NUMBER}")
+      ARGS+=("--requirepass" "${REDIS_PASSWORD}")
+      ARGS+=("--masterauth" "${REDIS_MASTER_PASSWORD}")
+      ARGS+=("--include" "/opt/bitnami/redis/etc/redis.conf")
+      ARGS+=("--include" "/opt/bitnami/redis/etc/replica.conf")
+      /run.sh "${ARGS[@]}"
+      
+    Liveness:   exec [sh -c /health/ping_liveness_local.sh 5] delay=30s timeout=5s period=10s #success=1 #failure=5
+    Readiness:  exec [sh -c /health/ping_readiness_local.sh 5] delay=5s timeout=10s period=10s #success=1 #failure=5
+    Environment:
+      REDIS_REPLICATION_MODE:    slave
+      REDIS_MASTER_HOST:         andyredis-master-0.andyredis-headless.default.svc.cluster.local
+      REDIS_PORT:                6379
+      REDIS_MASTER_PORT_NUMBER:  6379
+      REDIS_PASSWORD:            <set to the key 'redis-password' in secret 'andyredis'>  Optional: false
+      REDIS_MASTER_PASSWORD:     <set to the key 'redis-password' in secret 'andyredis'>  Optional: false
+    Mounts:
+      /data from redis-data (rw)
+      /health from health (rw)
+      /opt/bitnami/redis/etc from redis-tmp-conf (rw)
+      /opt/bitnami/redis/mounted-etc from config (rw)
+   sentinel:
+    Image:      docker.io/bitnami/redis-sentinel:5.0.7-debian-9-r10
+    Port:       26379/TCP
+    Host Port:  0/TCP
+    Command:
+      /bin/bash
+      -c
+      if [[ -n $REDIS_PASSWORD_FILE ]]; then
+        password_aux=`cat ${REDIS_PASSWORD_FILE}`
+        export REDIS_PASSWORD=$password_aux
+      fi
+      if [[ ! -f /opt/bitnami/redis-sentinel/etc/sentinel.conf ]];then
+        cp /opt/bitnami/redis-sentinel/mounted-etc/sentinel.conf /opt/bitnami/redis-sentinel/etc/sentinel.conf
+        printf "\nsentinel auth-pass mymaster $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+        printf "\nrequirepass $REDIS_PASSWORD" >> /opt/bitnami/redis-sentinel/etc/sentinel.conf
+      fi
+      
+      redis-server /opt/bitnami/redis-sentinel/etc/sentinel.conf --sentinel
+      
+    Liveness:   exec [sh -c /health/ping_sentinel.sh 5] delay=5s timeout=5s period=5s #success=1 #failure=5
+    Readiness:  exec [sh -c /health/ping_sentinel.sh 5] delay=5s timeout=1s period=5s #success=1 #failure=5
+    Environment:
+      REDIS_PASSWORD:       <set to the key 'redis-password' in secret 'andyredis'>  Optional: false
+      REDIS_SENTINEL_PORT:  26379
+    Mounts:
+      /data from redis-data (rw)
+      /health from health (rw)
+      /opt/bitnami/redis-sentinel/etc from sentinel-tmp-conf (rw)
+      /opt/bitnami/redis-sentinel/mounted-etc from config (rw)
+   metrics:
+    Image:      docker.io/bitnami/redis-exporter:1.3.4-debian-9-r15
+    Port:       9121/TCP
+    Host Port:  0/TCP
+    Command:
+      /bin/bash
+      -c
+      if [[ -f '/secrets/redis-password' ]]; then
+       export REDIS_PASSWORD=$(cat /secrets/redis-password)
+      fi
+      redis_exporter
+      
+    Environment:
+      REDIS_ALIAS:     andyredis
+      REDIS_PASSWORD:  <set to the key 'redis-password' in secret 'andyredis'>  Optional: false
+    Mounts:            <none>
+  Volumes:
+   health:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      andyredis-health
+    Optional:  false
+   config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      andyredis
+    Optional:  false
+   sentinel-tmp-conf:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+   redis-tmp-conf:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+Volume Claims:
+  Name:          redis-data
+  StorageClass:  
+  Labels:        app=redis
+                 component=slave
+                 heritage=Tiller
+                 release=andyredis
+  Annotations:   <none>
+  Capacity:      8Gi
+  Access Modes:  [ReadWriteOnce]
+Events:          <none>

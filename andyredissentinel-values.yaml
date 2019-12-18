@@ -18,7 +18,7 @@ sentinel:
   ## Redis Sentinel Service properties
   service:
     ##  Redis Sentinel Service type   ClusterIP
-    type: LoadBalancer
+    type: ClusterIP
     sentinelPort: 26379
     redisPort: 6379
 

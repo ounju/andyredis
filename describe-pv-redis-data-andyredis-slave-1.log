@@ -1,0 +1,26 @@
+Name:              pvc-c3674d1f-2158-11ea-be9d-02344e80bf5e
+Labels:            failure-domain.beta.kubernetes.io/region=ap-northeast-2
+                   failure-domain.beta.kubernetes.io/zone=ap-northeast-2a
+Annotations:       kubernetes.io/createdby: aws-ebs-dynamic-provisioner
+                   pv.kubernetes.io/bound-by-controller: yes
+                   pv.kubernetes.io/provisioned-by: kubernetes.io/aws-ebs
+Finalizers:        [kubernetes.io/pv-protection]
+StorageClass:      gp2
+Status:            Bound
+Claim:             default/redis-data-andyredis-slave-1
+Reclaim Policy:    Delete
+Access Modes:      RWO
+VolumeMode:        Filesystem
+Capacity:          8Gi
+Node Affinity:     
+  Required Terms:  
+    Term 0:        failure-domain.beta.kubernetes.io/zone in [ap-northeast-2a]
+                   failure-domain.beta.kubernetes.io/region in [ap-northeast-2]
+Message:           
+Source:
+    Type:       AWSElasticBlockStore (a Persistent Disk resource in AWS)
+    VolumeID:   aws://ap-northeast-2a/vol-02b99a72f29e7fd43
+    FSType:     ext4
+    Partition:  0
+    ReadOnly:   false
+Events:         <none>
