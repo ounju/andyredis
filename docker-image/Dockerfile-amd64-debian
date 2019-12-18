@@ -1,0 +1,6 @@
+FROM amd64/debian
+WORKDIR /andy
+RUN apt update; apt install vim -y; apt install telnet -y; apt install wget -y
+RUN wget https://github.com/argoproj/argo-cd/releases/download/v0.12.0/argocd-linux-amd64
+RUN chmod +x argocd-linux-amd64
+RUN mv argocd-linux-amd64 /usr/local/bin/argocd

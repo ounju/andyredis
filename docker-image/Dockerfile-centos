@@ -1,0 +1,6 @@
+FROM centos
+WORKDIR /andy
+RUN yum upgrade -y; yum install vim -y; yum install telnet -y; yum install wget -y
+RUN wget https://github.com/argoproj/argo-cd/releases/download/v0.12.0/argocd-linux-amd64
+RUN chmod +x argocd-linux-amd64
+RUN mv argocd-linux-amd64 /usr/local/bin/argocd
