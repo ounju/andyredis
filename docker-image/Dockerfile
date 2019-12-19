@@ -2,11 +2,12 @@ FROM ubuntu
 WORKDIR /andy
 RUN apt update; apt install vim telnet wget -y; apt upgrade -y
 RUN apt update; apt install apt-transport-https ca-certificates curl software-properties-common -y; apt update; apt upgrade -y
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-RUN apt update; apt upgrade -y
-RUN apt-cache policy docker-ce
-RUN apt install docker-ce -y
+#RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+#RUN apt update; apt upgrade -y
+RUN curl -fsSL https://get.docker.com/ | sh
+#RUN apt-cache policy docker-ce
+#RUN apt install docker-ce -y
 RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
 RUN add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 #RUN add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-jessie main"
