@@ -18,15 +18,15 @@ sentinel:
   ## Redis Sentinel Service properties
   service:
     ##  Redis Sentinel Service type   ClusterIP
-    type: ClusterIP
+    type: NodePort
     sentinelPort: 26379
     redisPort: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
-#    sentinelNodePort: 30000
-#    redisNodePort: 30001
+    sentinelNodePort: 30000
+    redisNodePort: 30001
 
     ## Provide any additional annotations which may be required. This can be used to
     ## set the LoadBalancer service type to internal only.
@@ -122,13 +122,13 @@ master:
   ## Redis Master Service properties
   service:
     ##  Redis Master Service type   ClusterIP
-    type: ClusterIP
+    type: NodePort
     port: 6379
 
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
-    #nodePort: 6379
+    nodePort: 30002
 
     ## Provide any additional annotations which may be required. This can be used to
     ## set the LoadBalancer service type to internal only.
@@ -160,7 +160,7 @@ master:
     # storageClass: "-"
     accessModes:
     - ReadWriteOnce
-    size: 8Gi
+    size: 16Gi
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -184,13 +184,13 @@ slave:
   ## Slave Service properties
   service:
     ## Redis Slave Service type
-    type: ClusterIP
+    type: NodePort
     ## Redis port
     port: 6379
     ## Specify the nodePort value for the LoadBalancer and NodePort service types.
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     ##
-    # nodePort:
+    nodePort: 30003
 
     ## Provide any additional annotations which may be required. This can be used to
     ## set the LoadBalancer service type to internal only.
@@ -282,7 +282,7 @@ slave:
     # storageClass: "-"
     accessModes:
     - ReadWriteOnce
-    size: 8Gi
+    size: 16Gi
 
   ## Update strategy, can be set to RollingUpdate or onDelete by default.
   ## https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
@@ -291,8 +291,6 @@ slave:
     ## Partition update strategy
     ## https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
     # rollingUpdatePartition:
-
-
 
 
 ## Prometheus Exporter / Metrics

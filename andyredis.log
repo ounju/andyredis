@@ -1,33 +1,33 @@
 NAME:   andyredis
-LAST DEPLOYED: Wed Dec 18 18:29:53 2019
+LAST DEPLOYED: Fri Dec 20 10:39:26 2019
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
 ==> v1/ConfigMap
 NAME              AGE
-andyredis         0s
-andyredis-health  0s
+andyredis         1s
+andyredis-health  1s
 
 ==> v1/Pod(related)
 NAME                AGE
-andyredis-master-0  0s
-andyredis-slave-0   0s
+andyredis-master-0  1s
+andyredis-slave-0   1s
 
 ==> v1/Secret
 NAME       AGE
-andyredis  0s
+andyredis  1s
 
 ==> v1/Service
 NAME                AGE
-andyredis           0s
-andyredis-headless  0s
-andyredis-metrics   0s
+andyredis           1s
+andyredis-headless  1s
+andyredis-metrics   1s
 
 ==> v1/StatefulSet
 NAME              AGE
-andyredis-master  0s
-andyredis-slave   0s
+andyredis-master  1s
+andyredis-slave   1s
 
 
 NOTES:

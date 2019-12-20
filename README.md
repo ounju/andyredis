@@ -56,7 +56,7 @@ caller_user = AIDA3B263POZESW27THNY
 config = #
 
 # kube config
-aws eks update-kubeconfig --name seoul-dev-fasttrack-eks --alias seoul-dev-fasttrack-eks
+aws eks update-kubeconfig --name seoul-dev-andy-eks --alias seoul-dev-andy-eks
 
 # or
 mkdir -p ~/.kube && cp .output/kube_config.yaml ~/.kube/config
@@ -72,44 +72,44 @@ kubectl get all --all-namespaces
 #
 
 efs_id =
-terraform import module.efs.aws_efs_file_system.efs fs-895512e8
+terraform import module.efs.aws_efs_file_system.efs fs-0cd7906d
 
 efs_mount_target_ids =
-terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-59f85938
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-56f85937
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-57f85936
+terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-84b617e5
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-83b617e2
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-86b617e7
 
 import_command-1 =
-terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__a1c4daf8f58186f137a4367538c30c86.fasttrack.opsnow.io._CNAME
+terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__13ee5909fa252a2f26d196cc3c1814a4.andy.opsnow.io._CNAME
 
 nat_ip = [
-  "13.125.0.100",
+  "52.78.75.168",
 ]
 private_subnet_cidr = [
-  "10.101.28.0/24",
-  "10.101.29.0/24",
-  "10.101.30.0/24",
+  "10.101.88.0/24",
+  "10.101.89.0/24",
+  "10.101.80.0/24",
 ]
 private_subnet_ids = [
-  "subnet-0ae3ec0c4b34d4ead",
-  "subnet-088d98444b2804042",
-  "subnet-014d69e93fd0872f9",
+  "subnet-012a420ffb90f043b",
+  "subnet-047333d9373e85c20",
+  "subnet-084aad27a46e84cd6",
 ]
 public_subnet_cidr = [
-  "10.101.25.0/24",
-  "10.101.26.0/24",
-  "10.101.27.0/24",
+  "10.101.85.0/24",
+  "10.101.86.0/24",
+  "10.101.87.0/24",
 ]
 public_subnet_ids = [
-  "subnet-0eb6a101023228c74",
-  "subnet-0c2b9d53467a36a5a",
-  "subnet-0c6075bc396ae3107",
+  "subnet-06a5a2e9f3fe61010",
+  "subnet-02a705e246f3e9bd6",
+  "subnet-04aca4e7e256a3635",
 ]
-record_set = *.fasttrack.opsnow.io
-sg-node = node security group id : sg-01dddcbca2de07d7f
-target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-DEV-FASTTRACK-EKS-ALB/0c26c56f5c766870
+record_set = *.andy.opsnow.io
+sg-node = node security group id : sg-09cccba983c75d29f
+target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-DEV-ANDY-EKS-ALB/7ffe587a6880e0ac
 vpc_cidr = 10.101.0.0/16
-vpc_id = vpc-0c3ea333cc27a622d
+vpc_id = vpc-08a3be8d931a3b03e
 ```
 ```text
 toolbox 설치하지 않으면 에러 발생함.
