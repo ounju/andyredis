@@ -1,6 +1,6 @@
 echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 echo 'redis-ha install start'
-helm install -f andyredisha-values.yaml --name andyredisha stable/redis-ha > andyredisha.log
+helm install -f andyredis-ha-values.yaml --name andyredis-ha stable/redis-ha > andyredis-ha.log
 echo 'redis-ha install OK'
 while [ true ]
 do
@@ -9,7 +9,7 @@ do
   echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   linecount=$(kubectl get po | grep Running | wc -l)
   echo 'linecount : ' $linecount
-  if [ $linecount -eq 2 ]
+  if [ $linecount -ge 6 ]
   then
     break
   fi
@@ -24,7 +24,7 @@ do
 
 done
 echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-kubectl logs andyredisha-redis-ha-server-0 --all-containers
+kubectl logs andyredis-ha-server-0 --all-containers
 echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-kubectl logs andyredisha-redis-ha-server-1 --all-containers
+kubectl logs andyredis-ha-server-1 --all-containers
 echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'

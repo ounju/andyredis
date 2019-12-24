@@ -140,7 +140,7 @@ redis:
     repl-diskless-sync: "yes"
     rdbcompression: "yes"
     rdbchecksum: "yes"
-    cluster-enabled: "yes"
+    #cluster-enabled: "yes"
 
 
   ## Custom redis.conf files used to override default settings. If this file is
@@ -196,7 +196,7 @@ nodeSelector: {}
 ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
 ##
-hardAntiAffinity: false
+hardAntiAffinity: true
 
 ## Additional affinities to add to the Redis server pods.
 ##
@@ -274,7 +274,7 @@ podDisruptionBudget: {}
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: true
-redisPassword: redishapassword
+redisPassword: redispassword
 
 ## Use existing secret containing key `authKey` (ignores redisPassword)
 # existingSecret:

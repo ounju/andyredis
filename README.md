@@ -4,13 +4,14 @@ redis cluster on k8s
 ## Master 1대, Slaver 2대로 구성
 install.sh
 
-
 ## Sentinel 구성
 installsentinel.sh
 
 ## 참고) Sentinel 명령
 ```shell script
 redis-cli -h 127.0.0.1 -p 26379 -a redispassword ROLE
+# sentinel 서버에서 reids master 정보 조회
+redis-cli -h localhost -p 30000 -a redispassword SENTINEL get-master-addr-by-name mymaster
 ```
 ```text
 센티널 명령은 사용자가 사용할 수도 있지만, 많은 명령이 센티널 내부적으로 사용된다.
@@ -46,6 +47,7 @@ terraform apply
 ```
 
 ```text
+
 Apply complete! Resources: 57 added, 0 changed, 0 destroyed.
 
 Outputs:
@@ -56,7 +58,7 @@ caller_user = AIDA3B263POZESW27THNY
 config = #
 
 # kube config
-aws eks update-kubeconfig --name seoul-dev-andy-eks --alias seoul-dev-andy-eks
+aws eks update-kubeconfig --name seoul-sre-andy-eks --alias seoul-sre-andy-eks
 
 # or
 mkdir -p ~/.kube && cp .output/kube_config.yaml ~/.kube/config
@@ -72,44 +74,45 @@ kubectl get all --all-namespaces
 #
 
 efs_id =
-terraform import module.efs.aws_efs_file_system.efs fs-0cd7906d
+terraform import module.efs.aws_efs_file_system.efs fs-24d39545
 
 efs_mount_target_ids =
-terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-84b617e5
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-83b617e2
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-86b617e7
+terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-873697e6
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-893697e8
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-853697e4
 
 import_command-1 =
 terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__13ee5909fa252a2f26d196cc3c1814a4.andy.opsnow.io._CNAME
 
 nat_ip = [
-  "52.78.75.168",
+  "13.124.93.39",
 ]
 private_subnet_cidr = [
-  "10.101.88.0/24",
-  "10.101.89.0/24",
-  "10.101.80.0/24",
+  "10.107.88.0/24",
+  "10.107.89.0/24",
+  "10.107.80.0/24",
 ]
 private_subnet_ids = [
-  "subnet-012a420ffb90f043b",
-  "subnet-047333d9373e85c20",
-  "subnet-084aad27a46e84cd6",
+  "subnet-0c876a8d59f744f45",
+  "subnet-0bf75eddcc8b11bcb",
+  "subnet-067e9581ebae1b108",
 ]
 public_subnet_cidr = [
-  "10.101.85.0/24",
-  "10.101.86.0/24",
-  "10.101.87.0/24",
+  "10.107.85.0/24",
+  "10.107.86.0/24",
+  "10.107.87.0/24",
 ]
 public_subnet_ids = [
-  "subnet-06a5a2e9f3fe61010",
-  "subnet-02a705e246f3e9bd6",
-  "subnet-04aca4e7e256a3635",
+  "subnet-094873823c3336129",
+  "subnet-04c320708477d5828",
+  "subnet-067a447863dac8ebc",
 ]
 record_set = *.andy.opsnow.io
-sg-node = node security group id : sg-09cccba983c75d29f
-target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-DEV-ANDY-EKS-ALB/7ffe587a6880e0ac
-vpc_cidr = 10.101.0.0/16
-vpc_id = vpc-08a3be8d931a3b03e
+sg-node = node security group id : sg-062d0d647748e180e
+target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-SRE-ANDY-EKS-ALB/8a732982d3cb9281
+vpc_cidr = 10.107.0.0/16
+vpc_id = vpc-017655fb3c8b0a6dd
+
 ```
 ```text
 toolbox 설치하지 않으면 에러 발생함.
@@ -473,5 +476,7 @@ m4.large 인스턴스는 기본적으로 8G gp2 타입 디스크가 할당되고
 helm delete 명령어를 사용해 redis cluster를 삭제해도 PV, PVC 정보는 남아있음.  
 주의) Terraform을 이용해 K8s cluster를 삭제해도 EBS는 삭제되지 않음 -> 별도 수작업으로 삭제해 주어야 함. 
 redis master/slave pod를 다시 설치하면 PVC 이름을 이용해 PV와 연결하므로 동일한 PV를 다시 마운트해서 사용함, 그래서 redis data가 지워지지 않음.
- 
 
+Redis는 데이터를 파일 또는 DB에 저장 가능하나 DB로 저장하게 되면 별도 DB가 필요하고 관리 포인트가 늘어날 거 같음.  
+파일 저장 방식을 택한다면 속도 측면에서 별도의 EBS SSD를 마운트 하여 사용하는 방식에 대한 검토가 필요해 보임.  
+S3도 선택지 중 하나일 수 있으나 속도 측면에서 좋은 선택은 아닌거 같음.  

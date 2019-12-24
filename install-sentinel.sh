@@ -15,7 +15,7 @@ while [ true ]
 do
   echo 'kubectl get po'
   kubectl get po
-  linecount=$(kubectl get po | grep Running | wc -l)
+  linecount=$(kubectl get po | grep andy | grep Running | wc -l)
   echo 'linecount : ' $linecount
   echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   if [ $linecount -eq 10 ]

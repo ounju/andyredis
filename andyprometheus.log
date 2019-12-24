@@ -1,0 +1,102 @@
+NAME:   andyprometheus
+LAST DEPLOYED: Fri Dec 20 18:22:06 2019
+NAMESPACE: development
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                         AGE
+andyprometheus-alertmanager  1s
+andyprometheus-server        1s
+
+==> v1/DaemonSet
+NAME                          AGE
+andyprometheus-node-exporter  1s
+
+==> v1/Deployment
+NAME                               AGE
+andyprometheus-alertmanager        1s
+andyprometheus-kube-state-metrics  1s
+andyprometheus-pushgateway         1s
+andyprometheus-server              1s
+
+==> v1/PersistentVolumeClaim
+NAME                         AGE
+andyprometheus-alertmanager  1s
+andyprometheus-server        1s
+
+==> v1/Pod(related)
+NAME                                                AGE
+andyprometheus-alertmanager-74bcbc68c4-drnqj        1s
+andyprometheus-kube-state-metrics-67db648dfc-nzmps  1s
+andyprometheus-node-exporter-d7tzw                  1s
+andyprometheus-pushgateway-6dbbb5d567-zr2g8         1s
+andyprometheus-server-86bf8ccfbb-4cbq5              1s
+
+==> v1/Service
+NAME                               AGE
+andyprometheus-alertmanager        1s
+andyprometheus-kube-state-metrics  1s
+andyprometheus-node-exporter       1s
+andyprometheus-pushgateway         1s
+andyprometheus-server              1s
+
+==> v1/ServiceAccount
+NAME                               AGE
+andyprometheus-alertmanager        1s
+andyprometheus-kube-state-metrics  1s
+andyprometheus-node-exporter       1s
+andyprometheus-pushgateway         1s
+andyprometheus-server              1s
+
+==> v1beta1/ClusterRole
+NAME                               AGE
+andyprometheus-alertmanager        1s
+andyprometheus-kube-state-metrics  1s
+andyprometheus-pushgateway         1s
+andyprometheus-server              1s
+
+==> v1beta1/ClusterRoleBinding
+NAME                               AGE
+andyprometheus-alertmanager        1s
+andyprometheus-kube-state-metrics  1s
+andyprometheus-pushgateway         1s
+andyprometheus-server              1s
+
+
+NOTES:
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+andyprometheus-server.development.svc.cluster.local
+
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace development -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace development port-forward $POD_NAME 9090
+
+
+The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
+andyprometheus-alertmanager.development.svc.cluster.local
+
+
+Get the Alertmanager URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace development -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace development port-forward $POD_NAME 9093
+#################################################################################
+######   WARNING: Pod Security Policy has been moved to a global property.  #####
+######            use .Values.podSecurityPolicy.enabled with pod-based      #####
+######            annotations                                               #####
+######            (e.g. .Values.nodeExporter.podSecurityPolicy.annotations) #####
+#################################################################################
+
+
+The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
+andyprometheus-pushgateway.development.svc.cluster.local
+
+
+Get the PushGateway URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace development -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace development port-forward $POD_NAME 9091
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
+

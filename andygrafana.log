@@ -1,0 +1,83 @@
+NAME:   andygrafana
+LAST DEPLOYED: Fri Dec 20 18:22:08 2019
+NAMESPACE: development
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ClusterRole
+NAME                     AGE
+andygrafana-clusterrole  0s
+
+==> v1/ClusterRoleBinding
+NAME                            AGE
+andygrafana-clusterrolebinding  0s
+
+==> v1/ConfigMap
+NAME              AGE
+andygrafana       1s
+andygrafana-test  1s
+
+==> v1/Deployment
+NAME         AGE
+andygrafana  0s
+
+==> v1/Pod(related)
+NAME                         AGE
+andygrafana-9fbff5799-8mr49  0s
+
+==> v1/Role
+NAME              AGE
+andygrafana-test  0s
+
+==> v1/RoleBinding
+NAME              AGE
+andygrafana-test  0s
+
+==> v1/Secret
+NAME         AGE
+andygrafana  1s
+
+==> v1/Service
+NAME         AGE
+andygrafana  0s
+
+==> v1/ServiceAccount
+NAME              AGE
+andygrafana       0s
+andygrafana-test  0s
+
+==> v1beta1/PodSecurityPolicy
+NAME              AGE
+andygrafana       1s
+andygrafana-test  1s
+
+==> v1beta1/Role
+NAME         AGE
+andygrafana  0s
+
+==> v1beta1/RoleBinding
+NAME         AGE
+andygrafana  0s
+
+
+NOTES:
+1. Get your 'admin' user password by running:
+
+   kubectl get secret --namespace development andygrafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+2. The Grafana server can be accessed via port 80 on the following DNS name from within your cluster:
+
+   andygrafana.development.svc.cluster.local
+
+   Get the Grafana URL to visit by running these commands in the same shell:
+NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace development -w andygrafana'
+     export SERVICE_IP=$(kubectl get svc --namespace development andygrafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+     http://$SERVICE_IP:80
+
+3. Login with the password from step 1 and the username: admin
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Grafana pod is terminated.                            #####
+#################################################################################
+

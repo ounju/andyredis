@@ -15,7 +15,7 @@ while [ true ]
 do
   echo 'kubectl get all'
   kubectl get all
-  linecount=$(kubectl get all | grep pod | wc -l)
+  linecount=$(kubectl get all | grep andy | grep pod | wc -l)
   echo 'linecount : ' $linecount
   echo 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   if [ $linecount -eq 0 ]
