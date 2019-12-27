@@ -74,18 +74,18 @@ kubectl get all --all-namespaces
 #
 
 efs_id =
-terraform import module.efs.aws_efs_file_system.efs fs-24d39545
+terraform import module.efs.aws_efs_file_system.efs fs-4c49082d
 
 efs_mount_target_ids =
-terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-873697e6
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-893697e8
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-853697e4
+terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-a4f151c5
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-a5f151c4
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-a6f151c7
 
 import_command-1 =
 terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__13ee5909fa252a2f26d196cc3c1814a4.andy.opsnow.io._CNAME
 
 nat_ip = [
-  "13.124.93.39",
+  "13.125.128.63",
 ]
 private_subnet_cidr = [
   "10.107.88.0/24",
@@ -93,9 +93,9 @@ private_subnet_cidr = [
   "10.107.80.0/24",
 ]
 private_subnet_ids = [
-  "subnet-0c876a8d59f744f45",
-  "subnet-0bf75eddcc8b11bcb",
-  "subnet-067e9581ebae1b108",
+  "subnet-0332d3270ba51db1f",
+  "subnet-0ba49067eb3806d14",
+  "subnet-04546b480dc1ac246",
 ]
 public_subnet_cidr = [
   "10.107.85.0/24",
@@ -103,15 +103,15 @@ public_subnet_cidr = [
   "10.107.87.0/24",
 ]
 public_subnet_ids = [
-  "subnet-094873823c3336129",
-  "subnet-04c320708477d5828",
-  "subnet-067a447863dac8ebc",
+  "subnet-04f29959a269beda9",
+  "subnet-0eda5b6f089609956",
+  "subnet-0f8543df5b14cc9df",
 ]
 record_set = *.andy.opsnow.io
-sg-node = node security group id : sg-062d0d647748e180e
-target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-SRE-ANDY-EKS-ALB/8a732982d3cb9281
+sg-node = node security group id : sg-0f98cbc023770d918
+target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-SRE-ANDY-EKS-ALB/cef9e2106daa235a
 vpc_cidr = 10.107.0.0/16
-vpc_id = vpc-017655fb3c8b0a6dd
+vpc_id = vpc-0ef0db6bc7d7ada63
 
 ```
 ```text
@@ -482,13 +482,70 @@ Redis는 데이터를 파일 또는 DB에 저장 가능하나 DB로 저장하게
 S3도 선택지 중 하나일 수 있으나 속도 측면에서 좋은 선택은 아닌거 같음.  
 
 # Redis HA helm chart를 이용한 HA 구성 테스트
+## 1) master node 1대 중지했을때 서비스 장애 시간은 20초, 시스템 정상화 5분 걸림
+참고 사항) 내부적으로 sentinel 서버에 의해 master 서버가 바뀔때 6380 port (slave 접속용 포트)를 통해 write 가능한 경우가 잠깐 생김
+## 2) node 2대(master 1대, slave 1대) 중지, slave 서버를 통한 read 서비스는 장애 시간 20초, write 서비스 장애 시간은 5분, 시스템 정상화 5분 걸림
+참고 사항) 내부적으로 sentinel 서버에 의해 master 서버가 바뀔때 6380 port (slave 접속용 포트)를 통해 write 가능한 경우가 잠깐 생김
+## 3) node 3대 모두 중지, read/write 서비스 장애 시간 6분, 시스템 정상화 11분 걸림
+참고 사항) redis-client를 사용하여 테스트 중인데... 에러 메시지 없이 조용히 지나감.  
+4분 정도 지나면 node 1대가 구동됨.  
+3대의 node 중 2대만 정상화 되어도 서비스는 정상화 됨.  
+## PV가 유지되어 이전에 저장한 cache data 가 삭제되지 않음을 확인함
 
-node 4대를 모두 중지 시켰을때 정상화 되는데 걸린 시간 : 11분  
-master 서비스  
-2019년 12월 24일 화요일 17시 15분 53초 KST ^^^^^  
-2019년 12월 24일 화요일 17시 25분 47초 KST ^^^^^ NOREPLICAS Not enough good replicas to write.  
-2019년 12월 24일 화요일 17시 26분 17초 KST ^^^^^ OK  
+## 성능 테스트
+### 테스트 조건
+```text
+100000 requests  
+50 parallel clients  
+3 bytes payload  
+```
+### 테스트 결과
+set : 8300 TPS  
+get : 8700 TPS  
+```text
+PING_INLINE: 8048.94 requests per second
+PING_BULK: 8895.21 requests per second
+SET: 8370.30 requests per second
+GET: 8788.12 requests per second
+INCR: 8443.09 requests per second
+LPUSH: 8602.15 requests per second
+RPUSH: 8386.45 requests per second
+LPOP: 8654.26 requests per second
+RPOP: 8513.54 requests per second
+SADD: 8624.41 requests per second
+HSET: 8399.13 requests per second
+SPOP: 8196.05 requests per second
+LPUSH (needed to benchmark LRANGE): 7705.94 requests per second
+LRANGE_100 (first 100 elements): 7867.82 requests per second
+LRANGE_300 (first 300 elements): 6947.34 requests per second
+LRANGE_500 (first 450 elements): 5878.55 requests per second
+LRANGE_600 (first 600 elements): 4793.17 requests per second
+MSET (10 keys): 8678.30 requests per second
+```  
+# helm upgrade 테스트
+helm upgrade 명령어를 이용하여 설정을 변경해 가면서 상태를 확인했습니다.
+## replica 갯수 설정을 3개에서 4개로 늘림
+추가로 pod 가 생성되어야 하는데 affinity 설정에의해 동일한 node에 2개의 redis 용 pod가 실행될수 없어서 pending 상태에 
+빠짐. 서비스 영향도는 없음. K8s cluster 설정에서 min 3, max 10으로 설정되어 있어서 node 수가 현재 3개에서 4개로 늘어날 거라 예상했는데... 아님.  
+## replica 갯수 설정을 3개에서 1개로 줄임
+redis pod 갯수가 1개로 줄어듦.
+Redis client에서 set 실행 하면 "NOREPLICAS Not enough good replicas to write." 에러 발생 -> master 서버만 있고 slave 서버가 없어서 set 기능 동작안함. get 기능은 정상 동작함.  
+## redis docker image version 변경
+pod/redis-ha-server-2 -> 1 -> 0 번 순서로 새로운 pod가 생성됨(pod IP가 변경됨을 확인)  
+redis 서버가 1대씩 교체될때 write 서비스 순단 현상 발생(2초 정도, read 서비스는 정상 동작함)  
+HA Proxy에서 redis master 서버가 변경된 정보를 인지하는데 2초 정도 걸리는거 같음.  
 
-replica 서비스  
-2019년 12월 24일 화요일 17시 15분 54초 KST ^^^^^  
-2019년 12월 24일 화요일 17시 26분 12초 KST ^^^^^ 33333  
+# 카오스 몽키 테스트
+## kubectl delete 명령어 이용해 work node 3개 삭제
+Work node 용 EC2는 삭제되지 않음. K8s 설정에서만 삭제됨.
+그러나 이로 인해 모든 pod가 pending 상태로 빠짐.
+자동으로 복구되지 않음.
+Helm tiller 도 삭제됨 -> Helm을 이용해 stable/redis-ha 차트를 재 설치 하려고 했으나 불가능함.    
+AWS consloe에서 work node 용 EC2 3개를 삭제함(EC2가 새로 생성되면서 K8s node 정보가 신규생성될거라는 기대로...)  
+EC2 3개 신규 생성됨. K8s node 정보가 신규 3개 생기나 서비스는 정상화 되지 않음.  
+Redis Pod 상태가 CrashLoopBackOff 상태로 빠짐. -> 정상화 안됨.  
+valve-tools 이용해 helm init 수행 하면 helm 정상 동작함.  
+Helm 이용해 redis-ha 다시 설치해야함 -> CLB 주소가 바뀜 -> 고정된 주소를 갖도록 설정 필요!!!
+## kubectl delete 명령어 이용해 PVC, PV 컴포넌트 삭제
+Terminating 상태로 빠짐, 계속 Terminating 상태로 남아있음, AWS console에서 확인해 보면 정상으로 보임.  
+
