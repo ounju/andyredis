@@ -42,13 +42,14 @@ haproxy:
   resources: {}
   ## Enable sticky sessions to Redis nodes via HAProxy
   ## Very useful for long-living connections as in case of Sentry for example
-  stickyBalancing: true
+  stickyBalancing: false
   ## Kubernetes priorityClass name for the haproxy pod
   # priorityClassName: ""
   ## Service type for HAProxy
   ##
   service:
     type: LoadBalancer
+    #loadBalancerIP: 15.165.151.69
     loadBalancerIP:
     annotations: {}
   serviceAccount:
@@ -200,7 +201,7 @@ nodeSelector: {}
 ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
 ##
-hardAntiAffinity: true
+hardAntiAffinity: false
 
 ## Additional affinities to add to the Redis server pods.
 ##
@@ -298,7 +299,7 @@ persistentVolume:
   # storageClass: "-"
   accessModes:
     - ReadWriteOnce
-  size: 16Gi
+  size: 4Gi
   annotations: {}
 init:
   resources: {}

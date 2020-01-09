@@ -73,19 +73,19 @@ kubectl get all --all-namespaces
 
 #
 
-efs_id =
-terraform import module.efs.aws_efs_file_system.efs fs-4c49082d
+efs_id = 
+terraform import module.efs.aws_efs_file_system.efs fs-7e3a781f
 
-efs_mount_target_ids =
-terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-a4f151c5
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-a5f151c4
-terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-a6f151c7
+efs_mount_target_ids = 
+terraform import 'module.efs.aws_efs_mount_target.efs[0]' fsmt-d9b013b8
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-d4b013b5
+terraform import 'module.efs.aws_efs_mount_target.efs[*]' fsmt-d7b013b6
 
-import_command-1 =
+import_command-1 = 
 terraform import -var-file=YOUR module.eks-domain.aws_route53_record.validation Z1PY2EID2YMYG4__13ee5909fa252a2f26d196cc3c1814a4.andy.opsnow.io._CNAME
 
 nat_ip = [
-  "13.125.128.63",
+  "15.165.133.46",
 ]
 private_subnet_cidr = [
   "10.107.88.0/24",
@@ -93,9 +93,9 @@ private_subnet_cidr = [
   "10.107.80.0/24",
 ]
 private_subnet_ids = [
-  "subnet-0332d3270ba51db1f",
-  "subnet-0ba49067eb3806d14",
-  "subnet-04546b480dc1ac246",
+  "subnet-0d6d77906d3381924",
+  "subnet-0bfc5b1552996c7f8",
+  "subnet-092cc85a06ec6f17a",
 ]
 public_subnet_cidr = [
   "10.107.85.0/24",
@@ -103,15 +103,17 @@ public_subnet_cidr = [
   "10.107.87.0/24",
 ]
 public_subnet_ids = [
-  "subnet-04f29959a269beda9",
-  "subnet-0eda5b6f089609956",
-  "subnet-0f8543df5b14cc9df",
+  "subnet-0a6ce764471b78881",
+  "subnet-0996a464409054067",
+  "subnet-0daae417f2cb31ac9",
 ]
 record_set = *.andy.opsnow.io
-sg-node = node security group id : sg-0f98cbc023770d918
-target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-SRE-ANDY-EKS-ALB/cef9e2106daa235a
+sg-node = node security group id : sg-0ef18489ac5d923d9
+target_group_arn = arn:aws:elasticloadbalancing:ap-northeast-2:759871273906:targetgroup/SEOUL-SRE-ANDY-EKS-ALB/bbe022e37bffc833
 vpc_cidr = 10.107.0.0/16
-vpc_id = vpc-0ef0db6bc7d7ada63
+vpc_id = vpc-0fc036da847981b4b
+
+
 
 ```
 ```text
@@ -548,4 +550,50 @@ valve-tools 이용해 helm init 수행 하면 helm 정상 동작함.
 Helm 이용해 redis-ha 다시 설치해야함 -> CLB 주소가 바뀜 -> 고정된 주소를 갖도록 설정 필요!!!
 ## kubectl delete 명령어 이용해 PVC, PV 컴포넌트 삭제
 Terminating 상태로 빠짐, 계속 Terminating 상태로 남아있음, AWS console에서 확인해 보면 정상으로 보임.  
+
+
+# Affinity 설정
+```text
+Affinity 설정 확인
+stable/redis-ha helm chart 설정은 다음과 같습니다.
+
+values.yaml 파일에 다음과 같이 설정함  
+## Whether the Redis server pods should be forced to run on separate nodes.
+## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+##
+hardAntiAffinity: true
+
+Helm chart 내 templates yaml 파일(redis-ha-statefulset.yaml)에 다음과 같이 설정되어 있음  
+        podAntiAffinity:
+    {{- if .Values.hardAntiAffinity }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ template "redis-ha.name" . }}
+                  release: {{ .Release.Name }}
+                  {{ template "redis-ha.fullname" . }}: replica
+              topologyKey: kubernetes.io/hostname
+
+5) hardAntiAffinity 값을 false 로 설정하고 replica 갯수를 늘려주면 동일한 node에 redis pod가 2개이상 구동됨.
+
+6) redis pod가 항상 동일한 node에서 구동되는거는 아님.
+     work node 갯수를 5개로 하고 replica 갯수를 1개로 줄였다가 5개로 늘리니 다른 node에 구동되는 pod가 있음을 확인함.
+
+7) replica 수를 3에서 4로 늘리면 4번 pod만 추가되는게 아님.
+     4번 pod가 추가되고, 3번 -> 2번 -> 1번 pod 순서로 재시작 됨.
+     replica 수가 줄어들어도 전체 pod가 역순으로 재시작 됨.
+
+8) PVC 설정에서 디스크 크기를 변경하면 에러 발생하면서 변경 안됨.
+     운영 환경 설정 시 디스크 크기를 신중하게 선택해야 할거 같음.
+
+Pending 상태일때 오류 메시지
+Warning  FailedScheduling  36s (x6 over 2m1s)  default-scheduler  0/5 nodes are available: 5 node(s) didn't match pod affinity/anti-affinity, 5 node(s) didn't satisfy existing pods anti-affinity rules.
+
+```
+### 추가 확인 사항
+* 쿠버네티스 설정에서 PV 삭제하면 AWS 볼륨이 삭제됨?
+* PVC 사이즈 설정을 줄이면 에러 발생하는데 늘리면?
+* 다른 존에 Pod가 뜨면 기존에 연결된 PV와 연결이 안될텐데...?
+
 
