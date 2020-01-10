@@ -592,7 +592,7 @@ Warning  FailedScheduling  36s (x6 over 2m1s)  default-scheduler  0/5 nodes are 
 
 ```
 ### 추가 확인 사항
-* 쿠버네티스 설정에서 PV 삭제하면 AWS 볼륨이 삭제됨?  
+* 쿠버네티스 설정에서 PV 삭제하면 AWS 볼륨이 삭제되는지 확인  
 "kubectl delete pv {PV이름}" 명령어를 사용하여 삭제 시도하면 deleted 로그는 뜨는데 명령어 실행은 끝나지 않음.  
 Bound -> Terminating 상태로 변경되며 삭제되지 않음.  
 계속해서 Terminating 상태로 남아있음.  
@@ -602,7 +602,7 @@ PVC를 동일한 방법으로 삭제해도 PV와 동일한 결과 얻음.
 PVC 를 삭제하면 PV 및 AWS 콘솔상 BES 볼륨도 삭제됨.  
 결론: PV 가 다른 리소스에 의해 사용되고 있으면 삭제되지 않고 Terminating 상태로 남아있음  
 
-* PVC 사이즈 설정을 줄이면 에러 발생하는데 늘리면?  
+* PVC 사이즈 설정을 줄이면 에러 발생하는데 늘리면 어떻게 되는지 확인  
 persistentVolume size 를 4Gi -> 8Gi 로 늘려도 에러 발생함.
 ```text
 UPGRADE FAILED
@@ -611,9 +611,17 @@ Error: UPGRADE FAILED: StatefulSet.apps "andyredis-ha-server" is invalid: spec: 
 ```
 'replicas', 'template'및 'updateStrategy'이외의 필드에 대한 statefulset 스펙 업데이트는 금지됩니다.  
 
-* 다른 존에 Pod가 뜨면 기존에 연결된 PV와 연결이 안될텐데...?  
+* 다른 존에 Pod가 뜨면 기존에 연결된 PV와 연결이 안될거 같음, 확인 필요  
 work node 가 a,b,c zone 에 각각 1대씩 생성되는줄 알았는데... 아님.  
 a zone 에 2대의 work node 생성됨을 확인함.  
+replica 를 10으로 설정하면 a zone 5대, c zone 5대로 생성되는거를 확인함 -> 나름의 규칙이 있는거 같음.  
+pod 10개를 동시에 삭제하고 이전 상태와 비교해 보니  
+pod 10개가 새로 생성되면서 node 가 변경되는 pod가 존재함을 확인함.  
+node 는 변경되나 동일한 zone에 있는 다른 node로 변경됨을 확인함.
+
+
+
+
 
 
 

@@ -6,7 +6,7 @@ image:
   tag: 5.0.6-alpine
   pullPolicy: IfNotPresent
 ## replicas number for each component
-replicas: 3
+replicas: 10
 
 ## Kubernetes priorityClass name for the redis-ha-server pod
 # priorityClassName: ""
@@ -49,7 +49,6 @@ haproxy:
   ##
   service:
     type: LoadBalancer
-    #loadBalancerIP: 15.165.151.69
     loadBalancerIP:
     annotations: {}
   serviceAccount:
@@ -201,7 +200,7 @@ nodeSelector: {}
 ## This is accomplished by setting their AntiAffinity with requiredDuringSchedulingIgnoredDuringExecution as opposed to preferred.
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
 ##
-hardAntiAffinity: false
+hardAntiAffinity: true
 
 ## Additional affinities to add to the Redis server pods.
 ##
